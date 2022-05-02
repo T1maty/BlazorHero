@@ -1,0 +1,108 @@
+﻿@page "/characters"
+
+<h3>Characterst</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Id</th>
+            <th>Name</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ( var character in characters)
+       {
+          <tr>
+              <td><img src="@character.Image" class="rounded"style="max-height: 100px"></td>
+              <td>@character.Id</td>
+              <td>@character.Name</td>
+              <td>
+                  <button class="btn btn-primary" @onclick="(() => EditCharacter(character.Id))">
+                  <i class="oi oi-pencil"></i>
+                  </button>
+              </td>
+             
+          </tr>
+       }
+    </tbody>
+</table>
+
+<hr />
+
+<EditForm Model="character" OnValidSubmit="HandleSubmit">
+
+  <div>
+    <label for="id">Id</label>
+    <InputNumber id="id"@bind-Value="character.Id" class="form-control"></InputNumber>
+  </div>
+  <div>
+    <label for="name">Name</label>
+    <InputText id="name"@bind-Value="character.Name" class="form-control"></InputText>
+  </div>
+  <div>
+    <label for="bio">Bio</label>
+    <InputTextArea id="bio"@bind-Value="character.Bio" class="form-control"></InputTextArea>
+  </div>
+  <div>
+    <label for="birthdate">Birthdate</label>
+    <InputDate id="birthdate"@bind-Value="character.BirthDate" class="form-control"></InputDate>
+  </div>
+ 
+</EditForm>
+
+
+@code {
+    static List<Team> teams = new List<Team>
+    {
+        new Team { Id = 1, Name = "Avengers" },
+        new Team { Id = 2,  Name = "Justice League" }
+    };
+
+    static List<Difficulty> difficulties = new List<Difficulty>
+    {
+        new Difficulty {Id = 1, Title = "Easy" },
+        new Difficulty { Id = 2, Title = "Normal" },
+        new Difficulty {Id = 3, Title = "Hard"},
+
+    };
+
+    static List<Character> characters = new List<Character>
+    {
+        new Character
+        {
+           Id = 1,
+           Name = "Peter Parker",
+           Bio = "Dude hanging out in New York City",
+           BirthDate = new DateTime(2001,8,10),
+           TeamId = 1,
+           DifficultyId = 1,
+           IsReadyToFight = true,
+
+
+        }
+    };
+
+    Character character = new Character();
+    bool isNew = true;
+
+    private void EditCharacter(int id)
+    {
+        var characterToEdit = characters.Find(c => c.Id == id);
+        if(characterToEdit != null)
+        {
+            character = characterToEdit;
+            isNew = false;
+        }
+    }
+
+    private void HandleSubmit()
+    {
+        if(isNew)
+        {
+            characters.Add(character);
+        }
+    }
+
+}
